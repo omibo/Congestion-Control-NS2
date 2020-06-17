@@ -20,8 +20,6 @@ proc finish {} {
         exit 0
 }
 
-#$defaultRNG seed 999
-
 #Create four nodes
 set n1 [$ns node]
 set n2 [$ns node]
@@ -29,21 +27,21 @@ set n3 [$ns node]
 set n4 [$ns node]
 set n5 [$ns node]
 set n6 [$ns node]
+$defaultRNG seed 0
+set randNum [new RandomVariable/Uniform];
+$randNum set min_ 5 
+$randNum set max_ 25
 
-set linkDelay23_ [new RandomVariable/Uniform];
-$linkDelay23_ set min_ 5 
-$linkDelay23_ set max_ 25
+set delay23 [expr [$randNum value]]
+set delay56 [expr [$randNum value]]
 
-set linkDelay56_ [new RandomVariable/Uniform];
-$linkDelay56_ set min_ 5 
-$linkDelay56_ set max_ 25
 
+puts "delay23: $delay23\ndelay56: $delay56"
 $ns duplex-link $n1 $n3 100Mb 5ms DropTail
-$ns duplex-link $n2 $n3 100Mb [expr [$linkDelay23_ value]]ms DropTail
-
+$ns duplex-link $n2 $n3 100Mb [expr $delay23]ms DropTail
 $ns duplex-link $n3 $n4 100Kb 1ms DropTail
 $ns duplex-link $n4 $n5 100Mb 5ms DropTail
-$ns duplex-link $n4 $n6 100Mb [expr [$linkDelay56_ value]]ms DropTail
+$ns duplex-link $n4 $n6 100Mb [expr $delay56]ms DropTail
 
 $ns queue-limit $n3 $n4 10
 $ns queue-limit $n4 $n5 10
@@ -52,10 +50,9 @@ $ns queue-limit $n4 $n6 10
 #Give node position (for NAM)
 $ns duplex-link-op $n1 $n3 orient left-up
 $ns duplex-link-op $n2 $n3 orient left-down
-#$ns duplex-link-op $n3 $n4 orient center
+$ns duplex-link-op $n3 $n4 orient center
 $ns duplex-link-op $n4 $n5 orient right-up
 $ns duplex-link-op $n4 $n6 orient right-down
-#$ns duplex-link-op $n3 $n4 orient center
 
 #Monitor the queue for link (n2-n3). (for NAM)
 $ns duplex-link-op $n3 $n4 queuePos 0.5

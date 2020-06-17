@@ -9,11 +9,11 @@ n -t * -a 5 -s 5 -S UP -v circle -c black -i black
 n -t * -a 1 -s 1 -S UP -v circle -c black -i black
 n -t * -a 2 -s 2 -S UP -v circle -c black -i black
 n -t * -a 3 -s 3 -S UP -v circle -c black -i black
-l -t * -s 2 -d 3 -S UP -r 100000 -D 0.001 -c black
 l -t * -s 0 -d 2 -S UP -r 100000000 -D 0.0050000000000000001 -c black -o left-up
-l -t * -s 1 -d 2 -S UP -r 100000000 -D 0.0050067920000000004 -c black -o left-down
+l -t * -s 1 -d 2 -S UP -r 100000000 -D 0.0081446790000000002 -c black -o left-down
+l -t * -s 2 -d 3 -S UP -r 100000 -D 0.001 -c black -o center
 l -t * -s 3 -d 4 -S UP -r 100000000 -D 0.0050000000000000001 -c black -o right-up
-l -t * -s 3 -d 5 -S UP -r 100000000 -D 0.016117610000000001 -c black -o right-down
+l -t * -s 3 -d 5 -S UP -r 100000000 -D 0.017224940000000001 -c black -o right-down
 q -t * -s 3 -d 2 -a 0.5
 q -t * -s 2 -d 3 -a 0.5
 + -t 0.1 -s 0 -d 2 -p tcp -e 40 -c 1 -i 0 -a 1 -x {0.0 4.0 0 ------- null}
