@@ -54,19 +54,6 @@ $ns duplex-link-op $n4 $n6 orient right-down
 $ns duplex-link-op $n3 $n4 queuePos 0.5
 
 
-#Setup a TCP connection
-# tahoe
-# set tcp [new Agent/TCP]
-# vegas
-# set tcp [new Agent/TCP/Vegas]
-
-# $tcp set class_ 2
-# $ns attach-agent $n1 $tcp
-# set sink [new Agent/TCPSink]
-# $ns attach-agent $n5 $sink
-# $ns connect $tcp $sink
-# $tcp set fid_ 1
-
 if {$method == "newreno"} {
    set tcp1 [new Agent/TCP/Newreno]
    set tcp2 [new Agent/TCP/Newreno]
