@@ -127,7 +127,7 @@ proc plotRTT {tcpSource outfile} {
    global timeIncr
 
    set now [$ns now]
-   set rtt [$tcpSource set cwnd_]
+   set rtt [$tcpSource set rtt_]
    
    puts $outfile  "$now $rtt"
    $ns at [expr $now+$timeIncr] "plotRTT $tcpSource $outfile"
@@ -140,7 +140,7 @@ $ns  at  0.0  "plotRTT $tcp2 $RTTfile2"
 proc plotGoodput {tcpSink outfile} {
    global ns
    global timeIncr
-   
+
    set now [$ns now]
    set nbytes [$tcpSink set bytes_]
    $tcpSink set bytes_ 0
