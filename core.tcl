@@ -1,4 +1,5 @@
-set method $env(METHOD)
+# set method $env(METHOD)
+set method "vegas"
 puts $method
 set ns [new Simulator]
 
@@ -25,6 +26,7 @@ set n3 [$ns node]
 set n4 [$ns node]
 set n5 [$ns node]
 set n6 [$ns node]
+
 $defaultRNG seed 0
 set randNum [new RandomVariable/Uniform];
 $randNum set min_ 5
@@ -42,6 +44,9 @@ $ns duplex-link $n4 $n5 100Mb 5ms DropTail
 $ns duplex-link $n4 $n6 100Mb [expr $delay56]ms DropTail
 
 $ns queue-limit $n3 $n4 10
+$ns queue-limit $n4 $n3 10
+$ns queue-limit $n3 $n1 10
+$ns queue-limit $n3 $n2 10
 $ns queue-limit $n4 $n5 10
 $ns queue-limit $n4 $n6 10
 
@@ -67,6 +72,30 @@ if {$method == "tahoe"} {
 if {$method == "vegas"} {
    set tcp1 [new Agent/TCP/Vegas]
    set tcp2 [new Agent/TCP/Vegas]
+}
+
+set p0 [new Agent/Ping]
+$ns attach-agent $n1 $p0
+set p1 [new Agent/Ping]
+$ns attach-agent $n5 $p1
+
+set p2 [new Agent/Ping]
+$ns attach-agent $n2 $p2
+set p3 [new Agent/Ping]
+$ns attach-agent $n6 $p3
+
+$ns connect $p0 $p1
+$ns connect $p2 $p3
+set delayTime 0
+
+# Method call from ping.cc file
+Agent/Ping instproc recv {from rtt} {
+   global delayTime
+   puts "RTT Rate: $rtt"
+   set delayTime [expr $delayTime + $rtt]
+   $self instvar node_
+   puts "node [$node_ id] received ping answer from \
+   $from with round-trip-time $rtt ms."
 }
 
 $ns attach-agent $n1 $tcp1
@@ -110,6 +139,26 @@ $ns  at  0.0  "plotWindow $tcp1  $cwndfile1"
 $ns  at  0.0  "plotWindow $tcp2  $cwndfile2"
 
 
+set RTTfile1 [open  "rtt1.txt"  w]
+set RTTfile2 [open  "rtt2.txt"  w]
+
+proc plotRTT {tcpSource tcpSink outfile} {
+   global ns
+   global delayTime
+   set now [$ns now]
+   $ns at $now "$tcpSource send"
+   $ns at $now "$tcpSink send"
+   puts $outfile  $delayTime
+   puts "Total Delay: $delayTime"
+   set delayTime 0
+   $ns at [expr $now+10] "plotRTT $tcpSource $tcpSink $outfile"
+}
+
+$ns  at  0.0  "plotRTT $p0 $p1 $RTTfile1"
+$ns  at  0.0  "plotRTT $p2 $p3 $RTTfile2"
+
+
+
 proc plotGoodput {tcpSink outfile} {
    global ns
 
@@ -141,8 +190,6 @@ $ns  at  0.0  "$traceapp2  start"
 $ns  at  0.0  "plotGoodput $traceapp1  $goodputfile1"
 $ns  at  0.0  "plotGoodput $traceapp2  $goodputfile2"
 
-# set flowMonitor1 [$ns makeflowmon Fid]
-# $ns attach-fmon [$ns link $n2 $n3] $flowMonitor1
 
 # proc plotDrops {flowMonitor outfile color} {
 #    global ns
