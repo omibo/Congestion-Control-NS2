@@ -5,7 +5,7 @@ import math
 if __name__ == "__main__":
   methods = ["tahoe", "newreno", "vegas"]
   colors = {"tahoe": 'teal', "newreno": 'magenta', "vegas": 'orange'}
-  params = ["cwnd", "goodput", "drop"]
+  params = ["cwnd", "goodput", "drop", "rtt"]
   labels = []
   paramVal = dict()
   for p in params:
