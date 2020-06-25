@@ -77,7 +77,9 @@ if {$method == "vegas"} {
 }
 
 $tcp1 set ttl_ 64
+$tcp1 set fid_ 1
 $tcp2 set ttl_ 64
+$tcp2 set fid_ 2
 
 
 $ns attach-agent $n1 $tcp1
