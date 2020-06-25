@@ -1,7 +1,9 @@
 # set method $env(METHOD)
-set method "vegas"
+set method "tahoe"
 puts $method
 set ns [new Simulator]
+
+set timeIncr 10.0
 
 $ns color 1 Green
 $ns color 2 Red
@@ -74,29 +76,9 @@ if {$method == "vegas"} {
    set tcp2 [new Agent/TCP/Vegas]
 }
 
-set p0 [new Agent/Ping]
-$ns attach-agent $n1 $p0
-set p1 [new Agent/Ping]
-$ns attach-agent $n5 $p1
+$tcp1 set ttl_ 64
+$tcp2 set ttl_ 64
 
-set p2 [new Agent/Ping]
-$ns attach-agent $n2 $p2
-set p3 [new Agent/Ping]
-$ns attach-agent $n6 $p3
-
-$ns connect $p0 $p1
-$ns connect $p2 $p3
-set delayTime 0
-
-# Method call from ping.cc file
-Agent/Ping instproc recv {from rtt} {
-   global delayTime
-   puts "RTT Rate: $rtt"
-   set delayTime [expr $delayTime + $rtt]
-   $self instvar node_
-   puts "node [$node_ id] received ping answer from \
-   $from with round-trip-time $rtt ms."
-}
 
 $ns attach-agent $n1 $tcp1
 set sink1 [new Agent/TCPSink]
@@ -125,47 +107,43 @@ $ns at 1002.0 "finish"
 
 set cwndfile1 [open  "cwnd1.txt"  w]
 set cwndfile2 [open  "cwnd2.txt"  w]
-
 proc plotWindow {tcpSource outfile} {
    global ns
+   global timeIncr
    set now [$ns now]
    set cwnd [$tcpSource set cwnd_]
 
    puts  $outfile  "$now $cwnd"
-   $ns at [expr $now+10] "plotWindow $tcpSource  $outfile"
+   $ns at [expr $now+$timeIncr] "plotWindow $tcpSource  $outfile"
 }
-
 $ns  at  0.0  "plotWindow $tcp1  $cwndfile1"
 $ns  at  0.0  "plotWindow $tcp2  $cwndfile2"
 
 
 set RTTfile1 [open  "rtt1.txt"  w]
 set RTTfile2 [open  "rtt2.txt"  w]
-
-proc plotRTT {tcpSource tcpSink outfile} {
+proc plotRTT {tcpSource outfile} {
    global ns
-   global delayTime
-   set now [$ns now]
-   $ns at $now "$tcpSource send"
-   $ns at $now "$tcpSink send"
-   puts $outfile  $delayTime
-   puts "Total Delay: $delayTime"
-   set delayTime 0
-   $ns at [expr $now+10] "plotRTT $tcpSource $tcpSink $outfile"
-}
+   global timeIncr
 
-$ns  at  0.0  "plotRTT $p0 $p1 $RTTfile1"
-$ns  at  0.0  "plotRTT $p2 $p3 $RTTfile2"
+   set now [$ns now]
+   set rtt [$tcpSource set cwnd_]
+   
+   puts $outfile  "$now $rtt"
+   $ns at [expr $now+$timeIncr] "plotRTT $tcpSource $outfile"
+}
+$ns  at  0.0  "plotRTT $tcp1 $RTTfile1"
+$ns  at  0.0  "plotRTT $tcp2 $RTTfile2"
 
 
 
 proc plotGoodput {tcpSink outfile} {
    global ns
-
+   global timeIncr
+   
    set now [$ns now]
    set nbytes [$tcpSink set bytes_]
    $tcpSink set bytes_ 0
-   set timeIncr 10.0
 
    set goodput [expr ($nbytes * 8.0 / 1000000) / $timeIncr]
 
@@ -173,7 +151,6 @@ proc plotGoodput {tcpSink outfile} {
 
    $ns at [expr $now+$timeIncr] "plotGoodput $tcpSink  $outfile"
 }
-
 set goodputfile1 [open  "goodput1.txt"  w]
 set goodputfile2 [open  "goodput2.txt"  w]
 
