@@ -1,9 +1,8 @@
-# set method $env(METHOD)
-set method "tahoe"
-puts $method
+set method $env(METHOD)
+puts -nonewline "▇"
 set ns [new Simulator]
 
-set timeIncr 10.0
+set timeIncr 4.0
 
 $ns color 1 Green
 $ns color 2 Red
@@ -38,7 +37,7 @@ set delay23 [expr [$randNum value]]
 set delay56 [expr [$randNum value]]
 
 
-puts "delay23: $delay23\ndelay56: $delay56"
+# puts "delay23: $delay23\ndelay56: $delay56"
 $ns duplex-link $n1 $n3 100Mb 5ms DropTail
 $ns duplex-link $n2 $n3 100Mb [expr $delay23]ms DropTail
 $ns duplex-link $n3 $n4 100Kb 1ms DropTail
@@ -121,7 +120,6 @@ proc plotWindow {tcpSource outfile} {
 $ns  at  0.0  "plotWindow $tcp1  $cwndfile1"
 $ns  at  0.0  "plotWindow $tcp2  $cwndfile2"
 
-
 set RTTfile1 [open  "rtt1.txt"  w]
 set RTTfile2 [open  "rtt2.txt"  w]
 proc plotRTT {tcpSource outfile} {
@@ -136,8 +134,6 @@ proc plotRTT {tcpSource outfile} {
 }
 $ns  at  0.0  "plotRTT $tcp1 $RTTfile1"
 $ns  at  0.0  "plotRTT $tcp2 $RTTfile2"
-
-
 
 proc plotGoodput {tcpSink outfile} {
    global ns
