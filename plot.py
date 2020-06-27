@@ -1,6 +1,5 @@
 import os
 import matplotlib.pyplot as plt
-import math
 import numpy as np
 
 def plot(timeIncr = 1):
@@ -53,8 +52,14 @@ def plot(timeIncr = 1):
           y = [0 for _ in range(1001)]
         else:
           x, y = zip(*lists) 
+        # plt.figure(figsize=(20,16))
+        # plt.title(param + " " + method + " flow" + str(flow))
         plt.xticks(np.arange(0, 1100, 100 / timeIncr))
         plt.plot(x, y, colors.pop(), linestyle=linestyle)
+        # plt.xlabel("time")
+        # plt.ylabel("parameter value")
+        # plt.savefig(param + "_" + method + "_" + str(flow) + ".png")
+        # plt.show()
     plt.xlabel("time")
     plt.ylabel("parameter value")
     plt.legend(labels, loc='upper left')
@@ -90,7 +95,6 @@ def calcDropRate(fileName, timeIncr = 1):
           dropNum2 += 1
 
   return dropRate1, dropRate2
-
 
 if __name__ == "__main__":
   plot(timeIncr = 1)

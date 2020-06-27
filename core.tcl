@@ -59,7 +59,6 @@ $ns duplex-link-op $n4 $n6 orient right-down
 
 $ns duplex-link-op $n3 $n4 queuePos 0.5
 
-
 if {$method == "newreno"} {
    set tcp1 [new Agent/TCP/Newreno]
    set tcp2 [new Agent/TCP/Newreno]
@@ -79,7 +78,6 @@ $tcp1 set ttl_ 64
 $tcp1 set fid_ 1
 $tcp2 set ttl_ 64
 $tcp2 set fid_ 2
-
 
 $ns attach-agent $n1 $tcp1
 set sink1 [new Agent/TCPSink]
@@ -164,23 +162,6 @@ $ns  at  0.0  "$traceapp2  start"
 
 $ns  at  0.0  "plotGoodput $traceapp1  $goodputfile1"
 $ns  at  0.0  "plotGoodput $traceapp2  $goodputfile2"
-
-
-# proc plotDrops {flowMonitor outfile color} {
-#    global ns
-
-#    set now [$ns now]
-
-#    set drops [expr [$flowMonitor set bdrops_]/1000]
-
-#    puts  $outfile  "color = $color"
-#    puts  $outfile  "$now $drops"
-
-#    $ns at [expr $now+0.1] "plotDrops $flowMonitor $outfile $color"
-# }
-
-# $ns  at  0.0  "plotDrops $flowMonitor1 $outfile1 $col1"
-# $ns  at  0.0  "plotDrops $outfile2 $col2"
 
 
 $ns run
