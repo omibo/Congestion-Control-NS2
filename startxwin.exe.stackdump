@@ -1,7 +1,0 @@
-Exception: STATUS_ACCESS_VIOLATION at eip=6102048B
-eax=013900F8 ebx=612435C4 ecx=142D325C edx=00036118 esi=00000000 edi=0060F884
-ebp=61020C00 esp=0060C654 program=C:\cygwin\bin\startxwin.exe, pid 7252, thread main
-cs=0023 ds=002B es=002B fs=0053 gs=002B ss=002B
-Stack trace:
-Frame     Function  Args
-End of stack trace

@@ -3,10 +3,9 @@ import matplotlib.pyplot as plt
 import math
 import numpy as np
 
-
 def plot(timeIncr = 1):
   methods = ["tahoe", "newreno", "vegas"]
-  params = ["cwnd", "goodput", "rtt", "drop"]
+  params = ["cwnd", "goodput", "rtt", "dropRate"]
   labels = []
   paramVal = dict()
   for p in params:
@@ -23,12 +22,12 @@ def plot(timeIncr = 1):
       dropRates = calcDropRate("out.tr", timeIncr)
       for flow in range(1,3):
         for param in params:
-          if (param == "drop"):
+          if (param == "dropRate"):
             for i in range(len(dropRates[flow - 1])):
               if (i * timeIncr) in paramVal[param][method][flow]:
                 paramVal[param][method][1][i * timeIncr] += dropRates[flow - 1][i]
               else:
-                paramVal[param][method][1][i * timeIncr] = 0
+                paramVal[param][method][1][i * timeIncr] = dropRates[flow - 1][i]
           else:
             f = open(param + str(flow) + ".txt")
             lines = f.readlines()
@@ -94,7 +93,4 @@ def calcDropRate(fileName, timeIncr = 1):
 
 
 if __name__ == "__main__":
-  # plot(timeIncr = 1)
-  a = calcDropRate("out.tr")
-  print(a[0])
-  # print(len(a[1]))
+  plot(timeIncr = 1)
