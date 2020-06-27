@@ -2,7 +2,7 @@ set method $env(METHOD)
 puts -nonewline "▇"
 set ns [new Simulator]
 
-set timeIncr 4.0
+set timeIncr $env(TIMEINCR)
 
 $ns color 1 Green
 $ns color 2 Red
@@ -99,12 +99,12 @@ set ftp2 [new Application/FTP]
 $ftp2 attach-agent $tcp2
 $ftp2 set type_ FTP
 
-$ns at 0.1   "$ftp1 start"
-$ns at 0.1   "$ftp2 start"
+$ns at 0.0   "$ftp1 start"
+$ns at 0.0   "$ftp2 start"
 $ns at 1000.0 "$ftp1 stop"
 $ns at 1000.0 "$ftp2 stop"
 
-$ns at 1002.0 "finish"
+$ns at 1001.0 "finish"
 
 set cwndfile1 [open  "cwnd1.txt"  w]
 set cwndfile2 [open  "cwnd2.txt"  w]
@@ -128,7 +128,7 @@ proc plotRTT {tcpSource outfile} {
 
    set now [$ns now]
    set rtt [$tcpSource set rtt_]
-   
+
    puts $outfile  "$now $rtt"
    $ns at [expr $now+$timeIncr] "plotRTT $tcpSource $outfile"
 }
