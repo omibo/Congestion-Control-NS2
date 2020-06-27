@@ -67,10 +67,9 @@ def calcDropRate(fileName, timeIncr = 1):
   step = timeIncr
   dropRate1 = list()
   dropRate2 = list()
-  sentPakcetsNum1 = 0
-  receivedPacketsNum1 = 0
-  sentPakcetsNum2 = 0
-  receivedPacketsNum2 = 0
+  dropNum1 = 0
+  dropNum2 = 0
+
   lastTime = step
   with open(fileName) as traceFile:
     for line in traceFile:
@@ -78,42 +77,24 @@ def calcDropRate(fileName, timeIncr = 1):
       status = eventRecordFields[0]
       time = float(eventRecordFields[1])
       if time>lastTime:
-        if sentPakcetsNum1 == 0:
-          dropRate1.append(0)
-        else:
-          dropRate1.append((sentPakcetsNum1-receivedPacketsNum1)*100 / sentPakcetsNum1)
-        if sentPakcetsNum2 == 0:
-          dropRate2.append(0)
-        else:
-          dropRate2.append((sentPakcetsNum2-receivedPacketsNum2)*100 / sentPakcetsNum2)
-        sentPakcetsNum1 = 0
-        receivedPacketsNum1 = 0
-        sentPakcetsNum2 = 0
-        receivedPacketsNum2 = 0
+        dropRate1.append(dropNum1)
+        dropRate2.append(dropNum2)
+        dropNum1 = 0
+        dropNum2 = 0 
         lastTime = int(time) + step
-      sendingNodeNumber = eventRecordFields[2]
-      destinationNodeNumber = eventRecordFields[3]
-      protocol = eventRecordFields[4]
       flowId = eventRecordFields[7]
-      if flowId == '1':
-        if status == '-' and sendingNodeNumber == '0':
-          sentPakcetsNum1 += 1
-        if status == 'r' and destinationNodeNumber == '0' and protocol == 'ack':
-          receivedPacketsNum1 += 1
-      elif flowId == '2':
-        if status == '-' and sendingNodeNumber == '1':
-          sentPakcetsNum2 += 1
-        if status == 'r' and destinationNodeNumber == '1' and protocol == 'ack':
-          receivedPacketsNum2 += 1  
+
+      if status == 'd':
+        if flowId == '1':
+          dropNum1 += 1
+        elif flowId == '2':
+          dropNum2 += 1
 
   return dropRate1, dropRate2
 
-# a = calcDropRate("out.tr")
-# print(a[0])
-# print(len(a[0]))
 
 if __name__ == "__main__":
-  plot(timeIncr = 1)
-  # a = calcDropRate("out.tr")
-  # print(a[1])
+  # plot(timeIncr = 1)
+  a = calcDropRate("out.tr")
+  print(a[0])
   # print(len(a[1]))
